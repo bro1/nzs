@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <title>NZS - residency calculator</title>
 
 
 <script>
@@ -25,7 +26,7 @@ function selcountry(countryCode, country) {
              element.textContent = country;
         }
 
-        // Set the id for the country container from just cid to cid_{countryCode}, e.g. cid_nz
+        // Set the id for the country container from just cid to cid_{countryCode}, e.g. cid_nzl
         var elements = firstClone.querySelectorAll("#cid");
         setElementId(elements, countryCode);
 
@@ -82,8 +83,11 @@ function calcYears(e) {
     var elements = container.querySelectorAll(".datefrom");
     for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
+        
+        if(element.id.startsWith("datefrom_" + cc + "_")) {        
+          console.log("from element ID: " + element.id);
+          
 
-        if(element.id.includes("datefrom_")) {        
             var idp = element.id.split("_")[2];
 
             dateto = document.getElementById("dateto_" + cc + "_" + idp);
@@ -219,34 +223,106 @@ function getDifferenceInDays(dateFrom, dateTo) {
 }
 
 
-function check() {
+/**
+ * Get years spent in a given country
+ * Return integer 
+ */
+function getDaysInCountry(cc) {
 
-    var dobElement = document.getElementById("dob");
-var dobValue = dobElement.value; // Assuming the element is an input element
+  var dobElement = document.getElementById("dob");
+  var dobValue = dobElement.value; // Assuming the element is an input element
+  // Convert the value to a Date object
+  var dob = new Date(dobValue);
 
-// Convert the value to a Date object
-var dob = new Date(dobValue);
-// Call the function with the date of birth as a parameter
-var years = calculateYearsOfBirth(dob);
+  /* 
+  1. get the element with ID dob and convert to Date
+  2. determine the date 20 years later and store in variabe years20
+  3. select all elements with class datefrom
+  4. for each element calculate the difference in days:  
+  4.1 if the element id starts with "datefrom_{countrycode}_" extract the number after the last "_"
+  4.2 look up the element with id dateto_{countrycode}_ + the number extracted before
+  4.3 if datefrom value is before and dateto value is before years20 skip
+  4.4 if datefrom value is before years20 but dateto is after calculate the difference in days between dateto and years20
+  4.5 otherwise  calculate the difference in days between dateto and years20
+  5. calculate the sum
+  */
 
-// Output the result
-var outputString = "Number of years required to stay in NZ since turning 20 is " + years;
-console.log(outputString);
 
-var resultsContainer = document.getElementById("results");
+  // Determine the date 20 years later and store it in the variable "years20"
+  var years20 = new Date(dob.getFullYear() + 20, dob.getMonth(), dob.getDate());
 
-// Remove all children from the container
-while (resultsContainer.firstChild) {
-  resultsContainer.removeChild(resultsContainer.firstChild);
+  // Select all elements with class "datefrom"
+  var dateFromElements = document.getElementsByClassName("datefrom");
+
+  // Variable to store the sum of differences in days
+  var sum = 0;
+
+  // Loop through each "datefrom" element
+  for (var i = 0; i < dateFromElements.length; i++) {
+
+    var dateFromElement = dateFromElements[i];
+
+    if (dateFromElement.id.startsWith("datefrom_" + cc + "_")) {
+
+      var dateFromValue = new Date(dateFromElement.value);
+
+      // Extract the number after the last "_" in the element's ID
+      var elementIdParts = dateFromElement.id.split("_");
+      var number = parseInt(elementIdParts[elementIdParts.length - 1]);
+
+      // Look up the "dateto" element with ID "dateto_nzl_" + the number extracted before
+      var datetoElement = document.getElementById("dateto_" + cc + "_" + number);
+      var datetoValue = new Date(datetoElement.value);
+
+      if (dateFromValue <= years20 || datetoValue <= years20) {
+        continue; // Skip if datefrom value is before dob or dateto value is before years20
+      } else if (dateFromValue <= years20 && datetoValue > years20) {
+        var dd = getDifferenceInDays(years20, datetoValue); 
+        if (dd >= 0) {
+          sum += dd;
+        } else {
+          addResultText("error: negative number of days");
+        }
+      } else {
+        var dd = getDifferenceInDays(dateFromValue, datetoValue);
+          if (dd >= 0) {  
+            sum += dd;
+          } else {
+            addResultText("error: negative number of days");
+          }
+      }
+    }
+  }
+
 }
 
-// Add a new text node and a line break
-var newText = document.createTextNode(outputString);
-var lineBreak = document.createElement("br");
+function check() {
 
-// Append the new nodes to the container
-resultsContainer.appendChild(newText);
-resultsContainer.appendChild(lineBreak);
+  var dobElement = document.getElementById("dob");
+  var dobValue = dobElement.value; // Assuming the element is an input element
+  var dob = new Date(dobValue);
+
+  // Call the function with the date of birth as a parameter
+  var yearsRequired = calculateYearsOfBirth(dob);
+
+  // Output the result
+  var outputString = "Number of years required to stay in NZ since turning 20 is " + yearsRequired;
+  console.log(outputString);
+
+  var resultsContainer = document.getElementById("results");
+
+  // Remove all children from the container
+  while (resultsContainer.firstChild) {
+    resultsContainer.removeChild(resultsContainer.firstChild);
+  }
+
+  // Add a new text node and a line break
+  var newText = document.createTextNode(outputString);
+  var lineBreak = document.createElement("br");
+
+  // Append the new nodes to the container
+  resultsContainer.appendChild(newText);
+  resultsContainer.appendChild(lineBreak);
 
 
 
@@ -255,8 +331,8 @@ resultsContainer.appendChild(lineBreak);
    2. determine the date 20 years later and store in variabe years20
    3. select all elements with class datefrom
    4. for each element calculate the difference in days:  
-   4.1 if the element id starts with "datefrom_nz_" extract the number after the last "_"
-   4.2 look up the element with id dateto_nz_ + the number extracted before
+   4.1 if the element id starts with "datefrom_nzl_" extract the number after the last "_"
+   4.2 look up the element with id dateto_nzl_ + the number extracted before
    4.3 if datefrom value is before and dateto value is before years20 skip
    4.4 if datefrom value is before years20 but dateto is after calculate the difference in days between dateto and years20
    4.5 otherwise  calculate the difference in days between dateto and years20
@@ -265,54 +341,56 @@ resultsContainer.appendChild(lineBreak);
  */
 
 
- // Get the element with ID "dob" and convert it to a Date
-var dobElement = document.getElementById("dob");
-var dobValue = dobElement.value;
-var dob = new Date(dobValue);
+  // Determine the date 20 years later and store it in the variable "years20"
+  var dateAtAge20 = new Date(dob.getFullYear() + 20, dob.getMonth(), dob.getDate());
+  // Determine the date 50 years later 
+  var dateAtAge50 = new Date(dob.getFullYear() + 50, dob.getMonth(), dob.getDate());
 
-// Determine the date 20 years later and store it in the variable "years20"
-var years20 = new Date(dob.getFullYear() + 20, dob.getMonth(), dob.getDate());
-// Determine the date 50 years later 
-var years50 = new Date(dob.getFullYear() + 50, dob.getMonth(), dob.getDate());
-
-// Select all elements with class "datefrom"
-var dateFromElements = document.getElementsByClassName("datefrom");
+  // Select all elements with class "datefrom"
+  var dateFromElements = document.getElementsByClassName("datefrom");
 
 
-// Variable to store the sum of differences in days
-var sum = 0;
+  // Variable to store the sum of differences in days
+  var sum = 0;
 
 // Loop through each "datefrom" element
 for (var i = 0; i < dateFromElements.length; i++) {
   var dateFromElement = dateFromElements[i];
   var dateFromValue = new Date(dateFromElement.value);
   
-  // Extract the number after the last "_" in the element's ID
-  var elementIdParts = dateFromElement.id.split("_");
-  var number = parseInt(elementIdParts[elementIdParts.length - 1]);
-  
-  // Look up the "dateto" element with ID "dateto_nz_" + the number extracted before
-  var datetoElement = document.getElementById("dateto_nz_" + number);
-  var datetoValue = new Date(datetoElement.value);
+  // FIXME: this has to be NZ only
 
-  if (dateFromValue <= years20 || datetoValue <= years20) {
-    continue; // Skip if datefrom value is before dob or dateto value is before years20
-  } else if (dateFromValue <= years20 && datetoValue > years20) {
-    var dd = getDifferenceInDays(years20, datetoValue); 
-    if (dd >= 0) {
+  if (dateFromElement.id.startsWith("datefrom_nz_")) {
+    // Extract the number after the last "_" in the element's ID
+    var elementIdParts = dateFromElement.id.split("_");
+    var number = parseInt(elementIdParts[elementIdParts.length - 1]);
+    
+    // Look up the "dateto" element with ID "dateto_nzl_" + the number extracted before
+    var datetoElement = document.getElementById("dateto_nzl_" + number);
+    var datetoValue = new Date(datetoElement.value);
+
+    if (dateFromValue <= dateAtAge20 || datetoValue <= dateAtAge20) {
+      continue; // Skip if datefrom value is before dob or dateto value is before years20
+    } else if (dateFromValue <= dateAtAge20 && datetoValue > dateAtAge20) {
+      var dd = getDifferenceInDays(dateAtAge20, datetoValue); 
+      if (dd >= 0) {
+          sum += dd;
+      } else {
+          addResultText("error: negative number of days");
+      }
+    } else {
+      var dd = getDifferenceInDays(dateFromValue, datetoValue);
+      if (dd >= 0) {  
         sum += dd;
-    } else {
-        addResultText("error: negative number of days");
-    }
-  } else {
-    var dd = getDifferenceInDays(dateFromValue, datetoValue);
-    if (dd >= 0) {  
-      sum += dd;
-    } else {
-        addResultText("error: negative number of days");
+      } else {
+          addResultText("error: negative number of days");
+      }
     }
   }
 }
+
+// TODO: 
+getDaysInCountry('');
 
 
 // Add a new text node and a line break
@@ -334,18 +412,33 @@ What's your date of birth?
 
 
 Which of those countries have you lived in?<p>
-<input id="nz" type="checkbox" onclick="selcountry('nz', 'New Zealand');">NZ
-<input id="au" type="checkbox" onclick="selcountry('au', 'Australia');">Australia
+<input id="nzl" type="checkbox" onclick="selcountry('nzl', 'New Zealand');">NZ
+
+<!-- NZ Realm -->
 <input id="cok" type="checkbox" onclick="selcountry('cok', 'Cook Islands');">Cook Islands
-<input id="ni" type="checkbox" onclick="selcountry('ni', 'Niue');">Niue
-<input id="tk" type="checkbox" onclick="selcountry('tk', 'Tokelau');">Tokelau
+<input id="niu" type="checkbox" onclick="selcountry('niu', 'Niue');">Niue
+<input id="tkl" type="checkbox" onclick="selcountry('tkl', 'Tokelau');">Tokelau
+
+<!-- SSA Residency -->
+<input id="aus" type="checkbox" onclick="selcountry('aus', 'Australia');">Australia
+<input id="dnk" type="checkbox" onclick="selcountry('dnk', 'Denmark');">Denmark
+
+<!-- SSA Residency (or contribution)-->
+<input id="gbr" type="checkbox" onclick="selcountry('gbr', 'United Kingdom');">United Kingdom
+<input id="grc" type="checkbox" onclick="selcountry('grc', 'Greece');">Greece
+<input id="can" type="checkbox" onclick="selcountry('can', 'Canada');">Canada
 
 <p>
-Which of these countries have you contributed to?<p>
-<input id="dk" type="checkbox" onclick="selcountry('dk', 'Denmark');">Denmark
-<input id="kor" type="checkbox" onclick="selcountry('kor', 'South Korea');">South Korea
-<input id="ie" type="checkbox" onclick="selcountry('ie', 'Ireland');">Ireland
-<input id="uk" type="checkbox" onclick="selcountry('uk', 'United Kingdom');">United Kingdom
+Which of these countries have you contributed to pension fund?<p>
+<input id="conkor" type="checkbox" onclick="selcountry('conkor', 'South Korea');">South Korea
+<input id="conjey" type="checkbox" onclick="selcountry('conjey', 'Jersey');">Jersey
+<input id="conggy" type="checkbox" onclick="selcountry('conggy', 'Gournsey');">Gournsey
+<input id="conirl" type="checkbox" onclick="selcountry('conirl', 'Ireland');">Ireland
+<input id="congbr" type="checkbox" onclick="selcountry('congbr', 'United Kingdom');">United Kingdom
+<input id="connld" type="checkbox" onclick="selcountry('connld', 'Netherlands');">Netherlands
+<input id="conmlt" type="checkbox" onclick="selcountry('conmlt', 'Malta');">Malta
+<input id="congrc" type="checkbox" onclick="selcountry('congrc', 'Greece');">Greece
+<input id="concan" type="checkbox" onclick="selcountry('concan', 'Canada');">Canada
 
 <template id="template">
 <p id="cid">I lived in <span id="country">Australia</span> for <input id="years" type="number" size="2" min="0" max="99"> years.  
