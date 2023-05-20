@@ -71,10 +71,10 @@ function calcYears(e) {
     const cc = e.target.parentElement.parentElement.id.split("_")[1];
     console.log('Country is ' + cc);    
 
+    // FIXME:
+
     var days = 0;
 
-    // FIXME:
-    
     // Iterate through each pair of dates
     // get the values, calculate the duration in days
     // if positive value - add those to convert them to years
@@ -160,8 +160,177 @@ function addMore(e) {
 
 }
 
+function calculateYearsOfBirth(dateOfBirth) {
+  const cutoffs = [
+    { startDate: new Date('1959-07-01'), endDate: new Date('1961-06-30'), years: 11 },
+    { startDate: new Date('1961-07-01'), endDate: new Date('1963-06-30'), years: 12 },
+    { startDate: new Date('1963-07-01'), endDate: new Date('1965-06-30'), years: 13 },
+    { startDate: new Date('1965-07-01'), endDate: new Date('1967-06-30'), years: 14 },
+    { startDate: new Date('1967-07-01'), endDate: new Date('1969-06-30'), years: 15 },
+    { startDate: new Date('1969-07-01'), endDate: new Date('1971-06-30'), years: 16 },
+    { startDate: new Date('1971-07-01'), endDate: new Date('1973-06-30'), years: 17 },
+    { startDate: new Date('1973-07-01'), endDate: new Date('1975-06-30'), years: 18 },
+    { startDate: new Date('1975-07-01'), endDate: new Date('1977-06-30'), years: 19 },
+    { startDate: new Date('1977-07-01'), endDate: new Date(), years: 20 }
+  ];
+
+  const dob = new Date(dateOfBirth);
+  const today = new Date();
+
+  for (let i = 0; i < cutoffs.length; i++) {
+    const { startDate, endDate, years } = cutoffs[i];
+    if (dob <= endDate) {
+      if (dob >= startDate) {
+        return years;
+      } else {
+        // Check if the person hasn't been born yet or falls before the first cutoff
+        return 0;
+      }
+    }
+  }
+
+  // Check if the person's birth year is after the last cutoff
+  if (dob > today) {
+    return 0;
+  }
+
+  return 20; // Default value if no cutoff matches
+}
+
+function addResultText(text) {
+    var resultsContainer = document.getElementById("results");
+
+    // Add a new text node and a line break
+    var newText = document.createTextNode(text);
+    var lineBreak = document.createElement("br");
+
+    // Append the new nodes to the container
+    resultsContainer.appendChild(newText);
+    resultsContainer.appendChild(lineBreak);
+
+}
+
+
+// Function to calculate the difference in days between two dates
+function getDifferenceInDays(dateFrom, dateTo) {
+  var timeDifference = dateTo.getTime() - dateFrom.getTime();
+  var differenceInDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
+  return differenceInDays;
+}
+
+
+function check() {
+
+    var dobElement = document.getElementById("dob");
+var dobValue = dobElement.value; // Assuming the element is an input element
+
+// Convert the value to a Date object
+var dob = new Date(dobValue);
+// Call the function with the date of birth as a parameter
+var years = calculateYearsOfBirth(dob);
+
+// Output the result
+var outputString = "Number of years required to stay in NZ since turning 20 is " + years;
+console.log(outputString);
+
+var resultsContainer = document.getElementById("results");
+
+// Remove all children from the container
+while (resultsContainer.firstChild) {
+  resultsContainer.removeChild(resultsContainer.firstChild);
+}
+
+// Add a new text node and a line break
+var newText = document.createTextNode(outputString);
+var lineBreak = document.createElement("br");
+
+// Append the new nodes to the container
+resultsContainer.appendChild(newText);
+resultsContainer.appendChild(lineBreak);
+
+
+
+/* 
+   1. get the element with ID dob and convert to Date
+   2. determine the date 20 years later and store in variabe years20
+   3. select all elements with class datefrom
+   4. for each element calculate the difference in days:  
+   4.1 if the element id starts with "datefrom_nz_" extract the number after the last "_"
+   4.2 look up the element with id dateto_nz_ + the number extracted before
+   4.3 if datefrom value is before and dateto value is before years20 skip
+   4.4 if datefrom value is before years20 but dateto is after calculate the difference in days between dateto and years20
+   4.5 otherwise  calculate the difference in days between dateto and years20
+   5. calculate the sum
+
+ */
+
+
+ // Get the element with ID "dob" and convert it to a Date
+var dobElement = document.getElementById("dob");
+var dobValue = dobElement.value;
+var dob = new Date(dobValue);
+
+// Determine the date 20 years later and store it in the variable "years20"
+var years20 = new Date(dob.getFullYear() + 20, dob.getMonth(), dob.getDate());
+// Determine the date 50 years later 
+var years50 = new Date(dob.getFullYear() + 50, dob.getMonth(), dob.getDate());
+
+// Select all elements with class "datefrom"
+var dateFromElements = document.getElementsByClassName("datefrom");
+
+
+// Variable to store the sum of differences in days
+var sum = 0;
+
+// Loop through each "datefrom" element
+for (var i = 0; i < dateFromElements.length; i++) {
+  var dateFromElement = dateFromElements[i];
+  var dateFromValue = new Date(dateFromElement.value);
+  
+  // Extract the number after the last "_" in the element's ID
+  var elementIdParts = dateFromElement.id.split("_");
+  var number = parseInt(elementIdParts[elementIdParts.length - 1]);
+  
+  // Look up the "dateto" element with ID "dateto_nz_" + the number extracted before
+  var datetoElement = document.getElementById("dateto_nz_" + number);
+  var datetoValue = new Date(datetoElement.value);
+
+  if (dateFromValue <= years20 || datetoValue <= years20) {
+    continue; // Skip if datefrom value is before dob or dateto value is before years20
+  } else if (dateFromValue <= years20 && datetoValue > years20) {
+    var dd = getDifferenceInDays(years20, datetoValue); 
+    if (dd >= 0) {
+        sum += dd;
+    } else {
+        addResultText("error: negative number of days");
+    }
+  } else {
+    var dd = getDifferenceInDays(dateFromValue, datetoValue);
+    if (dd >= 0) {  
+      sum += dd;
+    } else {
+        addResultText("error: negative number of days");
+    }
+  }
+}
+
+
+// Add a new text node and a line break
+var newText = document.createTextNode("Sum of differences in days:" + sum);
+var lineBreak = document.createElement("br");
+
+// Append the new nodes to the container
+resultsContainer.appendChild(newText);
+resultsContainer.appendChild(lineBreak);
+
+}
 
 </script>
+
+<button id="calculateButton" onclick="check()">Calculate</button>
+
+What's your date of birth? 
+<input type="date" id="dob"><p>
 
 
 Which of those countries have you lived in?<p>
@@ -193,6 +362,7 @@ Which of these countries have you contributed to?<p>
 
 <div id="container"></div>
 
-
+Results:
+<div id="results">No results yet</div>
 
 </html>
