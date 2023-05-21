@@ -121,7 +121,9 @@ function calcYears(e) {
 }
 
 
-
+/**
+ * Add more date range fields for a given country.
+ */
 function addMore(e) {
     const cc = e.target.parentElement.id.split("_")[1];
     console.log('Add more: Country is ' + cc);
@@ -294,6 +296,9 @@ function getDaysInCountry(cc) {
     }
   }
 
+
+  return sum;
+
 }
 
 function check() {
@@ -389,9 +394,50 @@ for (var i = 0; i < dateFromElements.length; i++) {
   }
 }
 
-// TODO: 
-getDaysInCountry('');
 
+var realmCountryDaysCok = getDaysInCountry('cok'); // Cook Islands
+var realmCountryDaysNiu = getDaysInCountry('niu'); // Niue
+var realmCountryDaysTkl = getDaysInCountry('tkl'); // Tokelau
+
+var residencyCountryDaysAus = getDaysInCountry('aus'); // Australia
+var residencyCountryDaysDnk = getDaysInCountry('dnk'); // Denmark
+
+var residencyCountryDaysGbr = getDaysInCountry('gbr'); // United Kingdom
+var residencyCountryDaysGrc = getDaysInCountry('grc'); // Greece
+
+var contribCountryDaysGbr = getDaysInCountry('congbr'); // United Kingdom
+var contribCountryDaysGrc = getDaysInCountry('congrc'); // Greece
+var contribCountryDaysCan = getDaysInCountry('concan'); // Canada
+var contribCountryDaysKor = getDaysInCountry('conkor'); // South Korea
+var contribCountryDaysIrl = getDaysInCountry('conirl'); // Ireland
+var contribCountryDaysNld = getDaysInCountry('connld'); // Netherlands
+var contribCountryDaysMlt = getDaysInCountry('conmlt'); // Malta
+var contribCountryDaysGgy = getDaysInCountry('conggy'); // Guernsey
+var contribCountryDaysJey = getDaysInCountry('conjey'); // Jersey
+
+addResultText("Years in Cook Islands: " + realmCountryDaysCok);
+addResultText("Years in Niue: " + realmCountryDaysNiu);
+addResultText("Years in Tokelau: " + realmCountryDaysTkl);
+
+addResultText("Years in Australia: " + residencyCountryDaysAus);
+addResultText("Years in Denmark: " + residencyCountryDaysDnk);
+
+addResultText("Years in United Kingdom: " + residencyCountryDaysGbr);
+addResultText("Years in Greece: " + residencyCountryDaysGrc);
+
+addResultText("Contribution Years in United Kingdom: " + contribCountryDaysGbr);
+addResultText("Contribution Years in Greece: " + contribCountryDaysGrc);
+addResultText("Contribution Years in Canada: " + contribCountryDaysCan);
+addResultText("Contribution Years in South Korea: " + contribCountryDaysKor);
+addResultText("Contribution Years in Ireland: " + contribCountryDaysIrl);
+addResultText("Contribution Years in Netherlands: " + contribCountryDaysNld);
+addResultText("Contribution Years in Malta: " + contribCountryDaysMlt);
+addResultText("Contribution Years in Guernsey: " + contribCountryDaysGgy);
+addResultText("Contribution Years in Jersey: " + contribCountryDaysJey);
+
+
+
+// TODO: 
 
 // Add a new text node and a line break
 var newText = document.createTextNode("Sum of differences in days:" + sum);
