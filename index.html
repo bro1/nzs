@@ -26,7 +26,8 @@ function selcountry(countryCode, country) {
              element.textContent = country;
         }
 
-        // Set the action
+        // Set the action (lived (default) or contributed)
+        // Contributed will be set if country code ID starts with "con"
         var elements = firstClone.querySelectorAll("#action");
         for (var i = 0; i < elements.length; i++) {
              var element = elements[i];
@@ -34,7 +35,6 @@ function selcountry(countryCode, country) {
               element.textContent = "contributed";
              }
         }
-
 
         // Set the id for the country container from just cid to cid_{countryCode}, e.g. cid_nzl
         var elements = firstClone.querySelectorAll("#cid");
