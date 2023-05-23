@@ -26,6 +26,16 @@ function selcountry(countryCode, country) {
              element.textContent = country;
         }
 
+        // Set the action
+        var elements = firstClone.querySelectorAll("#action");
+        for (var i = 0; i < elements.length; i++) {
+             var element = elements[i];
+             if (countryCode.startsWith("con")) {
+              element.textContent = "contributed";
+             }
+        }
+
+
         // Set the id for the country container from just cid to cid_{countryCode}, e.g. cid_nzl
         var elements = firstClone.querySelectorAll("#cid");
         setElementId(elements, countryCode);
@@ -404,6 +414,7 @@ var residencyCountryDaysDnk = getDaysInCountry('dnk'); // Denmark
 
 var residencyCountryDaysGbr = getDaysInCountry('gbr'); // United Kingdom
 var residencyCountryDaysGrc = getDaysInCountry('grc'); // Greece
+var residencyCountryDaysCan = getDaysInCountry('can'); // Canada
 
 var contribCountryDaysGbr = getDaysInCountry('congbr'); // United Kingdom
 var contribCountryDaysGrc = getDaysInCountry('congrc'); // Greece
@@ -415,25 +426,26 @@ var contribCountryDaysMlt = getDaysInCountry('conmlt'); // Malta
 var contribCountryDaysGgy = getDaysInCountry('conggy'); // Guernsey
 var contribCountryDaysJey = getDaysInCountry('conjey'); // Jersey
 
-addResultText("Years in Cook Islands: " + realmCountryDaysCok);
-addResultText("Years in Niue: " + realmCountryDaysNiu);
-addResultText("Years in Tokelau: " + realmCountryDaysTkl);
+addResultText("Days in Cook Islands: " + realmCountryDaysCok);
+addResultText("Days in Niue: " + realmCountryDaysNiu);
+addResultText("Days in Tokelau: " + realmCountryDaysTkl);
 
-addResultText("Years in Australia: " + residencyCountryDaysAus);
-addResultText("Years in Denmark: " + residencyCountryDaysDnk);
+addResultText("Days in Australia: " + residencyCountryDaysAus);
+addResultText("Days in Denmark: " + residencyCountryDaysDnk);
 
-addResultText("Years in United Kingdom: " + residencyCountryDaysGbr);
-addResultText("Years in Greece: " + residencyCountryDaysGrc);
+addResultText("Days in United Kingdom: " + residencyCountryDaysGbr);
+addResultText("Days in Greece: " + residencyCountryDaysGrc);
+addResultText("Days in Canada: " + residencyCountryDaysCan);
 
-addResultText("Contribution Years in United Kingdom: " + contribCountryDaysGbr);
-addResultText("Contribution Years in Greece: " + contribCountryDaysGrc);
-addResultText("Contribution Years in Canada: " + contribCountryDaysCan);
-addResultText("Contribution Years in South Korea: " + contribCountryDaysKor);
-addResultText("Contribution Years in Ireland: " + contribCountryDaysIrl);
-addResultText("Contribution Years in Netherlands: " + contribCountryDaysNld);
-addResultText("Contribution Years in Malta: " + contribCountryDaysMlt);
-addResultText("Contribution Years in Guernsey: " + contribCountryDaysGgy);
-addResultText("Contribution Years in Jersey: " + contribCountryDaysJey);
+addResultText("Contribution Days in United Kingdom: " + contribCountryDaysGbr);
+addResultText("Contribution Days in Greece: " + contribCountryDaysGrc);
+addResultText("Contribution Days in Canada: " + contribCountryDaysCan);
+addResultText("Contribution Days in South Korea: " + contribCountryDaysKor);
+addResultText("Contribution Days in Ireland: " + contribCountryDaysIrl);
+addResultText("Contribution Days in Netherlands: " + contribCountryDaysNld);
+addResultText("Contribution Days in Malta: " + contribCountryDaysMlt);
+addResultText("Contribution Days in Guernsey: " + contribCountryDaysGgy);
+addResultText("Contribution Days in Jersey: " + contribCountryDaysJey);
 
 
 
@@ -478,7 +490,7 @@ Which of those countries have you lived in?<p>
 Which of these countries have you contributed to pension fund?<p>
 <input id="conkor" type="checkbox" onclick="selcountry('conkor', 'South Korea');">South Korea
 <input id="conjey" type="checkbox" onclick="selcountry('conjey', 'Jersey');">Jersey
-<input id="conggy" type="checkbox" onclick="selcountry('conggy', 'Gournsey');">Gournsey
+<input id="conggy" type="checkbox" onclick="selcountry('conggy', 'Guernsey');">Guernsey
 <input id="conirl" type="checkbox" onclick="selcountry('conirl', 'Ireland');">Ireland
 <input id="congbr" type="checkbox" onclick="selcountry('congbr', 'United Kingdom');">United Kingdom
 <input id="connld" type="checkbox" onclick="selcountry('connld', 'Netherlands');">Netherlands
@@ -487,7 +499,7 @@ Which of these countries have you contributed to pension fund?<p>
 <input id="concan" type="checkbox" onclick="selcountry('concan', 'Canada');">Canada
 
 <template id="template">
-<p id="cid">I lived in <span id="country">Australia</span> for <input id="years" type="number" size="2" min="0" max="99"> years.  
+<p id="cid">I <span id="action">lived</span> in <span id="country">Australia</span> for <input id="years" type="number" size="2" min="0" max="99"> years.  
     <a id="dates" href="#">Specify dates instead</a>.<br>
     <span id="daterow"></span>
     <a href="#" id="more" onclick="addMore(event)">Add more</a>
@@ -503,5 +515,29 @@ Which of these countries have you contributed to pension fund?<p>
 
 Results:
 <div id="results">No results yet</div>
+
+<h2>Help</h2>
+<div><b>What's years?</b> For this calculator I am converting every 365 days (see wishlist).</div>
+
+<h2>To do:</h2>
+<ul>
+   <li>Implement the eligibility rules</li>   
+   <li>Include Australian rule of 67 years</li>
+   <li>UX: Treat the last empty entry for NZ date range as current date?</li>   
+   <li>Calculate the date when you'd be eligible with certain assumptions (that you continue living/contributing in the &quot;current&quot; country)</li>
+</ul>
+
+<h2>Wishlist:</h2>
+<ul>
+  <li>Check dates for overlaps</li>
+  <li>Treat the years in a facy way: each year is day to (same day - 1) in the next year (except for 29 Feb, it may be treated as 28 Feb when it's not leap year). The difference is days. Any set of remainders of days can be then added to 365 to count as a year.
+      <ul>
+        <li>1 year = 01 Mar 2020 - 28 Feb 2021</li>  
+        <li>1 year = 29 Feb 2020 - 27 Feb 2021</li>
+        <li>1 year = 01 Mar 2019 - 29 Feb 2020</li>
+        <li>1 year = 31 Mar 2019 - 30 Mar 2019</li>
+      </ul>
+  </li>
+</ul>
 
 </html>
