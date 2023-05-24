@@ -43,6 +43,8 @@ function selcountry(countryCode, country) {
         var elements = firstClone.querySelectorAll("#daterange");
         setElementId(elements, countryCode);
 
+        var elements = firstClone.querySelectorAll("#more");
+        setElementId(elements, countryCode);
 
         var elements = firstClone.querySelectorAll("#dates");
         for (var i = 0; i < elements.length; i++) {
@@ -373,9 +375,8 @@ for (var i = 0; i < dateFromElements.length; i++) {
   var dateFromElement = dateFromElements[i];
   var dateFromValue = new Date(dateFromElement.value);
   
-  // FIXME: this has to be NZ only
 
-  if (dateFromElement.id.startsWith("datefrom_nz_")) {
+  if (dateFromElement.id.startsWith("datefrom_nzl_")) {
     // Extract the number after the last "_" in the element's ID
     var elementIdParts = dateFromElement.id.split("_");
     var number = parseInt(elementIdParts[elementIdParts.length - 1]);
@@ -384,7 +385,7 @@ for (var i = 0; i < dateFromElements.length; i++) {
     var datetoElement = document.getElementById("dateto_nzl_" + number);
     var datetoValue = new Date(datetoElement.value);
 
-    if (dateFromValue <= dateAtAge20 || datetoValue <= dateAtAge20) {
+    if (dateFromValue < dateAtAge20 && datetoValue < dateAtAge20) {
       continue; // Skip if datefrom value is before dob or dateto value is before years20
     } else if (dateFromValue <= dateAtAge20 && datetoValue > dateAtAge20) {
       var dd = getDifferenceInDays(dateAtAge20, datetoValue); 
@@ -405,27 +406,58 @@ for (var i = 0; i < dateFromElements.length; i++) {
 }
 
 
-var realmCountryDaysCok = getDaysInCountry('cok'); // Cook Islands
-var realmCountryDaysNiu = getDaysInCountry('niu'); // Niue
-var realmCountryDaysTkl = getDaysInCountry('tkl'); // Tokelau
+var daysNZ = sum;
 
-var residencyCountryDaysAus = getDaysInCountry('aus'); // Australia
-var residencyCountryDaysDnk = getDaysInCountry('dnk'); // Denmark
+// var realmCountryDaysCok = getDaysInCountry('cok'); // Cook Islands
+// var realmCountryDaysNiu = getDaysInCountry('niu'); // Niue
+// var realmCountryDaysTkl = getDaysInCountry('tkl'); // Tokelau
 
-var residencyCountryDaysGbr = getDaysInCountry('gbr'); // United Kingdom
-var residencyCountryDaysGrc = getDaysInCountry('grc'); // Greece
-var residencyCountryDaysCan = getDaysInCountry('can'); // Canada
+// var residencyCountryDaysAus = getDaysInCountry('aus'); // Australia
+// var residencyCountryDaysDnk = getDaysInCountry('dnk'); // Denmark
 
-var contribCountryDaysGbr = getDaysInCountry('congbr'); // United Kingdom
-var contribCountryDaysGrc = getDaysInCountry('congrc'); // Greece
-var contribCountryDaysCan = getDaysInCountry('concan'); // Canada
-var contribCountryDaysKor = getDaysInCountry('conkor'); // South Korea
-var contribCountryDaysIrl = getDaysInCountry('conirl'); // Ireland
-var contribCountryDaysNld = getDaysInCountry('connld'); // Netherlands
-var contribCountryDaysMlt = getDaysInCountry('conmlt'); // Malta
-var contribCountryDaysGgy = getDaysInCountry('conggy'); // Guernsey
-var contribCountryDaysJey = getDaysInCountry('conjey'); // Jersey
+// var residencyCountryDaysGbr = getDaysInCountry('gbr'); // United Kingdom
+// var residencyCountryDaysGrc = getDaysInCountry('grc'); // Greece
+// var residencyCountryDaysCan = getDaysInCountry('can'); // Canada
 
+// var contribCountryDaysGbr = getDaysInCountry('congbr'); // United Kingdom
+// var contribCountryDaysGrc = getDaysInCountry('congrc'); // Greece
+// var contribCountryDaysCan = getDaysInCountry('concan'); // Canada
+// var contribCountryDaysKor = getDaysInCountry('conkor'); // South Korea
+// var contribCountryDaysIrl = getDaysInCountry('conirl'); // Ireland
+// var contribCountryDaysNld = getDaysInCountry('connld'); // Netherlands
+// var contribCountryDaysMlt = getDaysInCountry('conmlt'); // Malta
+// var contribCountryDaysGgy = getDaysInCountry('conggy'); // Guernsey
+// var contribCountryDaysJey = getDaysInCountry('conjey'); // Jersey
+
+
+var countries = [
+  { code: 'cok',    name: 'Cook Islands',   days: getDaysInCountry('cok')    },
+  { code: 'niu',    name: 'Niue',           days: getDaysInCountry('niu')    },
+  { code: 'tkl',    name: 'Tokelau',        days: getDaysInCountry('tkl')    },
+  { code: 'aus',    name: 'Australia',      days: getDaysInCountry('aus')    },
+  { code: 'dnk',    name: 'Denmark',        days: getDaysInCountry('dnk')    }, 
+  { code: 'gbr',    name: 'United Kingdom', days: getDaysInCountry('gbr')    },
+  { code: 'grc',    name: 'Greece',         days: getDaysInCountry('grc')    },
+  { code: 'can',    name: 'Canada',         days: getDaysInCountry('can')    },
+  { code: 'congbr', name: 'United Kingdom', days: getDaysInCountry('congbr') },
+  { code: 'congrc', name: 'Greece',         days: getDaysInCountry('congrc') },
+  { code: 'concan', name: 'Canada',         days: getDaysInCountry('concan') },
+  { code: 'conkor', name: 'South Korea',    days: getDaysInCountry('conkor') }, 
+  { code: 'conirl', name: 'Ireland',        days: getDaysInCountry('conirl') },
+  { code: 'connld', name: 'Netherlands',    days: getDaysInCountry('connld') },
+  { code: 'conmlt', name: 'Malta',          days: getDaysInCountry('conmlt') },
+  { code: 'conggy', name: 'Guernsey',       days: getDaysInCountry('conggy') },
+  { code: 'conjey', name: 'Jersey',         days: getDaysInCountry('conjey') }
+];
+
+console.log(countries);
+
+
+
+addResultText("Days in NZ: " + daysNZ);
+
+
+// FIXME: printout results in the loop
 addResultText("Days in Cook Islands: " + realmCountryDaysCok);
 addResultText("Days in Niue: " + realmCountryDaysNiu);
 addResultText("Days in Tokelau: " + realmCountryDaysTkl);
@@ -452,7 +484,7 @@ addResultText("Contribution Days in Jersey: " + contribCountryDaysJey);
 // TODO: 
 
 // Add a new text node and a line break
-var newText = document.createTextNode("Sum of differences in days:" + sum);
+var newText = document.createTextNode("Sum of differences in days: " + sum);
 var lineBreak = document.createElement("br");
 
 // Append the new nodes to the container
@@ -500,9 +532,9 @@ Which of these countries have you contributed to pension fund?<p>
 
 <template id="template">
 <p id="cid">I <span id="action">lived</span> in <span id="country">Australia</span> for <input id="years" type="number" size="2" min="0" max="99"> years.  
-    <a id="dates" href="#">Specify dates instead</a>.<br>
+    <br>
     <span id="daterow"></span>
-    <a href="#" id="more" onclick="addMore(event)">Add more</a>
+    <a href="#" id="more" onclick="addMore(event)">Add more dates</a>
     </span>
 </template>
 
@@ -515,6 +547,10 @@ Which of these countries have you contributed to pension fund?<p>
 
 Results:
 <div id="results">No results yet</div>
+
+<h2>Test</h2>
+<button onclick="test1()">Test Australia</button> 
+
 
 <h2>Help</h2>
 <div><b>What's years?</b> For this calculator I am converting every 365 days (see wishlist).</div>
@@ -539,5 +575,38 @@ Results:
       </ul>
   </li>
 </ul>
+
+
+<script>
+
+document.getElementById("nzl").click();
+document.getElementById("more_nzl").click();
+
+</script>
+
+
+<script>
+function test1() {  
+  document.getElementById("dob").value="1967-11-01";
+  // moved to australia at age 30 (e.g. 1997-12-01)
+  document.getElementById("aus").click();
+  document.getElementById("more_aus").click();
+
+  document.getElementById("datefrom_nzl_1").value = "1967-11-01";
+  document.getElementById("dateto_nzl_1").value = "1997-12-01";
+
+  document.getElementById("datefrom_aus_1").value = "1997-12-01";
+  document.getElementById("dateto_aus_1").value = "2023-05-24";
+  
+  document.getElementById("dateto_aus_1").value = "2023-05-24";
+
+
+  document.getElementById("calculateButton").click();
+  
+}
+</script>
+
+
+
 
 </html>
