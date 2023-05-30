@@ -452,36 +452,32 @@ var countries = [
 
 console.log(countries);
 
+// Initialize variables
+var maxDaysObject = null;
+var maxDays = -Infinity;
+
+// Iterate over the countries array
+for (var i = 0; i < countries.length; i++) {
+  var country = countries[i];
+
+  if (country.days > maxDays) {
+    maxDays = country.days;
+    maxDaysObject = country;
+  }
+}
+
+console.log(maxDaysObject);
 
 
 addResultText("Days in NZ: " + daysNZ);
 
 
-// FIXME: printout results in the loop
-addResultText("Days in Cook Islands: " + realmCountryDaysCok);
-addResultText("Days in Niue: " + realmCountryDaysNiu);
-addResultText("Days in Tokelau: " + realmCountryDaysTkl);
-
-addResultText("Days in Australia: " + residencyCountryDaysAus);
-addResultText("Days in Denmark: " + residencyCountryDaysDnk);
-
-addResultText("Days in United Kingdom: " + residencyCountryDaysGbr);
-addResultText("Days in Greece: " + residencyCountryDaysGrc);
-addResultText("Days in Canada: " + residencyCountryDaysCan);
-
-addResultText("Contribution Days in United Kingdom: " + contribCountryDaysGbr);
-addResultText("Contribution Days in Greece: " + contribCountryDaysGrc);
-addResultText("Contribution Days in Canada: " + contribCountryDaysCan);
-addResultText("Contribution Days in South Korea: " + contribCountryDaysKor);
-addResultText("Contribution Days in Ireland: " + contribCountryDaysIrl);
-addResultText("Contribution Days in Netherlands: " + contribCountryDaysNld);
-addResultText("Contribution Days in Malta: " + contribCountryDaysMlt);
-addResultText("Contribution Days in Guernsey: " + contribCountryDaysGgy);
-addResultText("Contribution Days in Jersey: " + contribCountryDaysJey);
-
-
-
-// TODO: 
+for (var i = 0; i < countries.length; i++) {
+  var country = countries[i];
+  var daysText = country.code.startsWith('con') ? 'Contribution Days in ' : 'Days in ';
+  var resultText = daysText + country.name + ": " + country.days;
+  addResultText(resultText);
+}
 
 // Add a new text node and a line break
 var newText = document.createTextNode("Sum of differences in days: " + sum);
