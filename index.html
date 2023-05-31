@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
   <title>NZS - residency calculator</title>
-
-
 <script>
 
 function setElementId(elements, countryCode) {
@@ -408,28 +406,6 @@ for (var i = 0; i < dateFromElements.length; i++) {
 
 var daysNZ = sum;
 
-// var realmCountryDaysCok = getDaysInCountry('cok'); // Cook Islands
-// var realmCountryDaysNiu = getDaysInCountry('niu'); // Niue
-// var realmCountryDaysTkl = getDaysInCountry('tkl'); // Tokelau
-
-// var residencyCountryDaysAus = getDaysInCountry('aus'); // Australia
-// var residencyCountryDaysDnk = getDaysInCountry('dnk'); // Denmark
-
-// var residencyCountryDaysGbr = getDaysInCountry('gbr'); // United Kingdom
-// var residencyCountryDaysGrc = getDaysInCountry('grc'); // Greece
-// var residencyCountryDaysCan = getDaysInCountry('can'); // Canada
-
-// var contribCountryDaysGbr = getDaysInCountry('congbr'); // United Kingdom
-// var contribCountryDaysGrc = getDaysInCountry('congrc'); // Greece
-// var contribCountryDaysCan = getDaysInCountry('concan'); // Canada
-// var contribCountryDaysKor = getDaysInCountry('conkor'); // South Korea
-// var contribCountryDaysIrl = getDaysInCountry('conirl'); // Ireland
-// var contribCountryDaysNld = getDaysInCountry('connld'); // Netherlands
-// var contribCountryDaysMlt = getDaysInCountry('conmlt'); // Malta
-// var contribCountryDaysGgy = getDaysInCountry('conggy'); // Guernsey
-// var contribCountryDaysJey = getDaysInCountry('conjey'); // Jersey
-
-
 var countries = [
   { code: 'cok',    name: 'Cook Islands',   days: getDaysInCountry('cok')    },
   { code: 'niu',    name: 'Niue',           days: getDaysInCountry('niu')    },
@@ -466,6 +442,7 @@ for (var i = 0; i < countries.length; i++) {
   }
 }
 
+
 console.log(maxDaysObject);
 
 
@@ -480,13 +457,41 @@ for (var i = 0; i < countries.length; i++) {
 }
 
 // Add a new text node and a line break
-var newText = document.createTextNode("Sum of differences in days: " + sum);
+var newText = document.createTextNode("Sum of days in NZ since turning 20: " + sum);
 var lineBreak = document.createElement("br");
 
 // Append the new nodes to the container
 resultsContainer.appendChild(newText);
 resultsContainer.appendChild(lineBreak);
 
+
+addResultText(maxDaysObject.code.startsWith('con') ? 'Contribution days ' : "Residency days in " + maxDaysObject.name + ": " +  maxDaysObject.days);
+
+
+var totalEligibleDays = sum + maxDaysObject.days;
+
+addResultText("Total days overseas and NZ: " + totalEligibleDays);
+addResultText("Total years overseas and NZ: " + toYears(totalEligibleDays));
+
+var eligibleForNZS = false;
+
+if (totalEligibleDays > 365*20) {
+  eligibleForNZS = true;
+}
+
+addResultText("Total years overseas and NZ: " + toYears(totalEligibleDays));
+
+// TODO: 5 years over 50
+// TODO: NZ realm countries logic
+// TODO: eligible from what date? when turning 65? if Australia's days are included - 67?
+
+addResultText("Eligible for NZS: " + eligibleForNZS);
+
+}
+
+function toYears(days) {
+  y =  Math.floor(days * 10 / 365) / 10;
+  return y;
 }
 
 </script>
@@ -557,7 +562,6 @@ document.getElementById("more_nzl").click();
 
 </script>
 
-
 <script>
 function test1() {  
   document.getElementById("dob").value="1967-11-01";
@@ -572,7 +576,6 @@ function test1() {
   document.getElementById("dateto_aus_1").value = "2023-05-24";
   
   document.getElementById("dateto_aus_1").value = "2023-05-24";
-
 
   document.getElementById("calculateButton").click();
   

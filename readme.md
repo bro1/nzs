@@ -1,7 +1,13 @@
+# NZS calculator (in progress, incomplete)
+
+[workandincome.govt.nz](https://www.workandincome.govt.nz/eligibility/seniors/nz-super-and-veterans-pension-residency-changes-2024.html):
+> The residence criteria for New Zealand Superannuation (NZ Super) and Veteran's Pension will change in July 2024.
+
+
 ## Help
 * **What's years?** For this calculator I am converting every 365 days (see wishlist).
 
-##To do:
+## To do:
 - [ ] Implement the eligibility rules
 - [ ] Include Australian rule of 67 years
 - [ ] UX: Treat the last empty entry for NZ date range as current date?
