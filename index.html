@@ -484,7 +484,6 @@ addResultText("Total years overseas and NZ: " + toYears(totalEligibleDays));
 // TODO: 5 years over 50
 // TODO: NZ realm countries logic
 // TODO: eligible from what date? when turning 65? if Australia's days are included - 67?
-
 addResultText("Eligible for NZS: " + eligibleForNZS);
 
 }
@@ -550,10 +549,9 @@ Results:
 <div id="results">No results yet</div>
 
 <h2>Test</h2>
-<button onclick="test1()">Test Australia</button> 
-
-
-
+<button onclick="test1()">Test Australia</button>
+<button onclick="test2()">Test Korea</button>
+<button onclick="test3()">Test Cook Islands</button>
 
 <script>
 
@@ -573,13 +571,53 @@ function test1() {
   document.getElementById("dateto_nzl_1").value = "1997-12-01";
 
   document.getElementById("datefrom_aus_1").value = "1997-12-01";
-  document.getElementById("dateto_aus_1").value = "2023-05-24";
-  
-  document.getElementById("dateto_aus_1").value = "2023-05-24";
+  document.getElementById("dateto_aus_1").value = "2023-05-24";  
+
+  document.getElementById("calculateButton").click();  
+}
+
+
+function test2() {  
+  document.getElementById("dob").value="1963-10-10";
+  // moved to Korea at age 27 (e.g. 1990-12-01)
+  // contributed to Korea from age 30 (e.g. 1993-11-01)
+
+  document.getElementById("conkor").click();
+  document.getElementById("more_conkor").click();
+
+  document.getElementById("datefrom_nzl_1").value = "1963-10-10";
+  document.getElementById("dateto_nzl_1").value = "1990-12-01";
+
+  document.getElementById("datefrom_conkor_1").value = "1993-11-01";
+  document.getElementById("dateto_conkor_1").value = "2023-06-01";  
 
   document.getElementById("calculateButton").click();
-  
 }
+
+
+function test3() {  
+  document.getElementById("dob").value="1978-05-12";
+  // You were born in NZ on 12 May 1978 and moved to the Cook Islands at age 25.
+  // You remain in the Cook Islands and apply for NZ Super (from the Cook Islands) when you turn 65.
+  //
+  // The residence criteria states that based on your date of birth, 
+  // you must have lived in NZ for at least 20 years  since you turned 20.
+  // The 20 years must include 5 years since you turned 50.
+  // To meet the residence criteria, you can use the time you've lived in the Cook Islands.
+
+  document.getElementById("cok").click();
+  document.getElementById("more_cok").click();
+
+  document.getElementById("datefrom_nzl_1").value = "1978-05-12";
+  document.getElementById("dateto_nzl_1").value = "2003-08-01";
+
+  document.getElementById("datefrom_cok_1").value = "2003-08-01";
+  document.getElementById("dateto_cok_1").value = "2023-06-01";  
+
+  document.getElementById("calculateButton").click();
+}
+
+
 </script>
 
 
